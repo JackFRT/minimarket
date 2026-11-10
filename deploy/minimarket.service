@@ -1,0 +1,26 @@
+[Unit]
+Description=Minimarket Grupo 2 (API Go + React SaaS)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=minimarket
+Group=minimarket
+Environment=ADDR=127.0.0.1:8080
+Environment=PUBLIC_HTTP_80=1
+Environment=DATA_FILE=/var/lib/minimarket/data.json
+WorkingDirectory=/var/lib/minimarket
+ExecStart=/opt/minimarket/minimarket
+Restart=always
+RestartSec=3
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/minimarket
+
+[Install]
+WantedBy=multi-user.target

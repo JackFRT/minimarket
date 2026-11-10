@@ -1,0 +1,6 @@
+# Caddy obtiene y renueva solo el certificado HTTPS gratuito (Let's Encrypt)
+# y redirige http:// a https:// automáticamente.
+minimarket-grupo2.duckdns.org {
+	encode gzip
+	reverse_proxy 127.0.0.1:8080
+}

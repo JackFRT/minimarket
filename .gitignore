@@ -1,0 +1,4 @@
+data.json
+*.exe
+dist/
+frontend/node_modules/

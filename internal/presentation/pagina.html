@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f2">
+  <title>Minimarket | Grupo 2</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d3129;
+      --muted: #758179;
+      --green: #2f6848;
+      --green-dark: #234f38;
+      --green-soft: #eaf2eb;
+      --line: #e8ece7;
+      --paper: #fff;
+      --canvas: #f5f7f2;
+      --amber: #bd7d2c;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    button, input { font: inherit; }
+
+    .shell {
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .topbar, .brand, .topbar-meta, .section-heading, .section-title, .form-actions,
+    .row-actions, .stat-label, .hero-kicker {
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar {
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .brand { gap: 12px; }
+
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--green);
+      color: #fff;
+    }
+
+    .brand-name { font-size: 15px; font-weight: 750; letter-spacing: -.02em; }
+    .brand-caption, .topbar-meta { color: var(--muted); font-size: 12px; }
+    .topbar-meta { gap: 8px; }
+    .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #64a66e; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      min-height: 206px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 32px 38px;
+      border-radius: 22px;
+      background: linear-gradient(112deg, #244f39 0%, #34714d 64%, #588559 100%);
+      color: #fff;
+      box-shadow: 0 14px 32px rgb(34 78 54 / 12%);
+    }
+
+    .hero::after {
+      position: absolute;
+      top: -110px;
+      right: -24px;
+      width: 360px;
+      height: 360px;
+      border: 1px solid rgb(255 255 255 / 13%);
+      border-radius: 50%;
+      box-shadow: 0 0 0 34px rgb(255 255 255 / 5%), 0 0 0 70px rgb(255 255 255 / 4%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; }
+    .hero-kicker { gap: 8px; margin-bottom: 12px; color: #d3e2d3; font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+    .hero-kicker span { width: 20px; height: 1px; background: #c8d9c9; }
+    .hero h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -.045em; line-height: 1.16; }
+    .hero p { margin: 10px 0 0; color: #d6e3d8; font-size: 14px; }
+    .hero-note { position: relative; z-index: 1; max-width: 185px; color: #e2ece1; font-size: 12px; text-align: right; }
+    .hero-note strong { display: block; margin-bottom: 5px; color: #fff; font-size: 14px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin: 20px 0 26px;
+    }
+
+    .stat-card, .panel {
+      border: 1px solid #edf0eb;
+      background: var(--paper);
+      box-shadow: 0 5px 18px rgb(39 54 43 / 3%);
+    }
+
+    .stat-card { min-height: 102px; padding: 19px 21px; border-radius: 16px; }
+    .stat-label { justify-content: space-between; color: var(--muted); font-size: 12px; }
+    .stat-icon { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 10px; background: var(--green-soft); color: var(--green); }
+    .stat-value { display: block; margin-top: 5px; font-size: 25px; font-weight: 750; letter-spacing: -.04em; line-height: 1.1; }
+
+    .panel { margin-top: 18px; padding: 25px 26px 22px; border-radius: 18px; }
+    .section-heading { justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+    .section-title { gap: 12px; }
+    .section-icon { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: 12px; background: var(--green-soft); color: var(--green); }
+    h2 { margin: 0; font-size: 17px; font-weight: 740; letter-spacing: -.025em; }
+    .section-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+    .count { padding: 5px 10px; border-radius: 99px; background: #f3f5f1; color: #647168; font-size: 11px; font-weight: 650; white-space: nowrap; }
+
+    .editor {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.45fr) minmax(115px, 1fr) minmax(100px, .75fr) auto;
+      align-items: end;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid #edf0eb;
+      border-radius: 14px;
+      background: #fafbf9;
+    }
+
+    .editor.supplier-editor { grid-template-columns: minmax(180px, 1fr) minmax(150px, .8fr) auto; }
+    .field label { display: block; margin: 0 0 6px 2px; color: #657168; font-size: 11px; font-weight: 650; }
+    .field input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #dfe5dd;
+      border-radius: 9px;
+      outline: none;
+      background: #fff;
+      color: var(--ink);
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .field input::placeholder { color: #a2aaa3; }
+    .field input:focus { border-color: #6e9a78; box-shadow: 0 0 0 3px rgb(74 126 86 / 12%); }
+    .form-actions { gap: 8px; }
+
+    .button {
+      display: inline-flex;
+      min-height: 37px;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+    .button:hover { transform: translateY(-1px); }
+    .button-primary { background: var(--green); color: #fff; }
+    .button-primary:hover { background: var(--green-dark); }
+    .button-quiet { border-color: #e2e7e0; background: #fff; color: #59665c; }
+    .button-quiet:hover { background: #f4f6f2; }
+    .button-action { min-height: 31px; padding: 0 9px; border-color: #e8ece7; background: #fff; color: #526057; font-size: 11px; }
+    .button-action:hover { border-color: #b7cbb9; background: #f4f8f3; color: var(--green-dark); }
+    .button-danger:hover { border-color: #f1d0c9; background: #fff5f2; color: #a94734; }
+
+    .table-wrap { overflow-x: auto; margin-top: 18px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { padding: 0 13px 10px; color: #879188; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    td { padding: 12px 13px; border-top: 1px solid #edf0eb; color: #35443a; font-size: 12px; }
+    tbody tr { transition: background .12s; }
+    tbody tr:hover { background: #fbfcfa; }
+    td:first-child { color: var(--ink); font-weight: 650; }
+    .price { font-variant-numeric: tabular-nums; font-weight: 650; }
+    .stock-badge { display: inline-flex; min-width: 34px; justify-content: center; padding: 3px 8px; border-radius: 99px; background: #edf5ed; color: #42714b; font-size: 11px; font-weight: 700; }
+    .stock-low { background: #fbf1e4; color: #a36921; }
+    .row-actions { flex-wrap: wrap; gap: 6px; }
+    .empty { padding: 27px 12px; color: #8a948c; text-align: center; }
+
+    #message {
+      position: fixed;
+      z-index: 5;
+      right: 24px;
+      bottom: 24px;
+      max-width: min(400px, calc(100vw - 32px));
+      padding: 12px 17px;
+      border: 1px solid #dce8dc;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 8px 26px rgb(33 54 39 / 12%);
+      color: var(--green-dark);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity .2s, transform .2s;
+    }
+    #message.visible { opacity: 1; transform: translateY(0); }
+    #message.error { border-color: #f0d7d1; color: #a94734; }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 28px, 560px); padding-top: 18px; }
+      .topbar { margin-bottom: 20px; }
+      .topbar-meta { font-size: 0; }
+      .hero { min-height: 185px; padding: 27px 24px; }
+      .hero-note { display: none; }
+      .stats { gap: 9px; margin: 14px 0 20px; }
+      .stat-card { min-height: 91px; padding: 13px; }
+      .stat-label { align-items: flex-start; font-size: 10px; }
+      .stat-icon { width: 25px; height: 25px; }
+      .stat-value { font-size: 22px; }
+      .panel { padding: 19px 15px 16px; }
+      .editor, .editor.supplier-editor { grid-template-columns: 1fr 1fr; }
+      .form-actions { grid-column: 1 / -1; }
+      .form-actions .button { flex: 1; }
+      .table-wrap { margin-right: -15px; margin-left: -15px; padding: 0 15px; }
+      table { min-width: 580px; }
+      .supplier-table { min-width: 460px; }
+    }
+
+    @media (max-width: 420px) {
+      .stats { grid-template-columns: 1fr; }
+      .stat-card { min-height: 76px; }
+      .stat-value { display: inline-block; margin-top: 2px; }
+      .section-heading { align-items: flex-start; }
+      .count { margin-top: 5px; }
+      .editor, .editor.supplier-editor { grid-template-columns: 1fr; }
+      .form-actions { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+            <path d="M4 10h16l-1.3-5H5.3L4 10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M5 10v9h14v-9M9 19v-5h6v5M3.5 10a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">Minimarket</div>
+          <div class="brand-caption">Panel de administración · Grupo 2</div>
+        </div>
+      </div>
+      <div class="topbar-meta"><span class="online-dot"></span> Sistema listo</div>
+    </header>
+
+    <section class="hero" aria-labelledby="welcome-title">
+      <div class="hero-content">
+        <div class="hero-kicker"><span></span> Control de tu negocio</div>
+        <h1 id="welcome-title">Todo en orden,<br>todos los días.</h1>
+        <p>Administra tus productos y proveedores desde un solo lugar.</p>
+      </div>
+      <div class="hero-note"><strong>Simple y organizado</strong>Inventario al día para que tu tienda siga creciendo.</div>
+    </section>
+
+    <section class="stats" aria-label="Resumen del inventario">
+      <article class="stat-card">
+        <div class="stat-label">Productos registrados <span class="stat-icon" aria-hidden="true">▦</span></div>
+        <strong class="stat-value" id="product-count">0</strong>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">Unidades en stock <span class="stat-icon" aria-hidden="true">↗</span></div>
+        <strong class="stat-value" id="stock-count">0</strong>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">Proveedores <span class="stat-icon" aria-hidden="true">♧</span></div>
+        <strong class="stat-value" id="supplier-count">0</strong>
+      </article>
+    </section>
+
+    <section class="panel" aria-labelledby="products-title">
+      <div class="section-heading">
+        <div class="section-title">
+          <span class="section-icon" aria-hidden="true">▦</span>
+          <div>
+            <h2 id="products-title">Productos</h2>
+            <p class="section-subtitle">Organiza y actualiza tu inventario</p>
+          </div>
+        </div>
+        <span class="count" id="products-count">0 productos</span>
+      </div>
+      <form class="editor" id="product">
+        <div class="field"><label for="product-name">Nombre del producto</label><input id="product-name" name="nombre" placeholder="Ej. Arroz extra" required></div>
+        <div class="field"><label for="product-price">Precio (S/)</label><input id="product-price" name="precio" type="number" step="0.01" min="0" placeholder="0.00" required></div>
+        <div class="field"><label for="product-stock">Stock</label><input id="product-stock" name="stock" type="number" min="0" step="1" placeholder="0" required></div>
+        <div class="form-actions"><button class="button button-primary" type="submit">Guardar producto</button><button class="button button-quiet" type="reset">Limpiar</button></div>
+      </form>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Producto</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+          <tbody id="products"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="suppliers-title">
+      <div class="section-heading">
+        <div class="section-title">
+          <span class="section-icon" aria-hidden="true">♧</span>
+          <div>
+            <h2 id="suppliers-title">Proveedores</h2>
+            <p class="section-subtitle">Ten a mano los datos de tus contactos</p>
+          </div>
+        </div>
+        <span class="count" id="suppliers-count">0 proveedores</span>
+      </div>
+      <form class="editor supplier-editor" id="supplier">
+        <div class="field"><label for="supplier-name">Nombre del proveedor</label><input id="supplier-name" name="nombre" placeholder="Ej. Distribuidora Central" required></div>
+        <div class="field"><label for="supplier-phone">Teléfono</label><input id="supplier-phone" name="telefono" type="tel" placeholder="Número de contacto"></div>
+        <div class="form-actions"><button class="button button-primary" type="submit">Guardar proveedor</button><button class="button button-quiet" type="reset">Limpiar</button></div>
+      </form>
+      <div class="table-wrap">
+        <table class="supplier-table">
+          <thead><tr><th>Proveedor</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+          <tbody id="suppliers"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <p id="message" role="status" aria-live="polite"></p>
+  <script>
+    const msg = document.querySelector('#message');
+    let messageTimer;
+    const currency = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' });
+
+    function showMessage(text, error = false) {
+      msg.textContent = text;
+      msg.classList.toggle('error', error);
+      msg.classList.add('visible');
+      clearTimeout(messageTimer);
+      messageTimer = setTimeout(() => msg.classList.remove('visible'), 3200);
+    }
+
+    async function api(path, method = 'GET', data) {
+      const response = await fetch('/api/' + path, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: data ? JSON.stringify(data) : undefined
+      });
+      const value = response.status === 204 ? null : await response.json();
+      if (!response.ok) throw Error(value.error || 'Error del servidor');
+      return value;
+    }
+
+    function button(label, className, action) {
+      const element = document.createElement('button');
+      element.type = 'button';
+      element.className = 'button button-action ' + className;
+      element.textContent = label;
+      element.onclick = () => Promise.resolve().then(action).catch(error => showMessage(error.message, true));
+      return element;
+    }
+
+    function emptyRow(body, columns, message) {
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = columns;
+      cell.className = 'empty';
+      cell.textContent = message;
+      row.append(cell);
+      body.append(row);
+    }
+
+    async function load() {
+      const [products, suppliers] = await Promise.all([api('productos'), api('proveedores')]);
+      document.getElementById('product-count').textContent = products.length;
+      document.getElementById('stock-count').textContent = products.reduce((total, product) => total + Number(product.stock), 0).toLocaleString('es-PE');
+      document.getElementById('supplier-count').textContent = suppliers.length;
+      document.getElementById('products-count').textContent = `${products.length} ${products.length === 1 ? 'producto' : 'productos'}`;
+      document.getElementById('suppliers-count').textContent = `${suppliers.length} ${suppliers.length === 1 ? 'proveedor' : 'proveedores'}`;
+
+      const productBody = document.getElementById('products');
+      productBody.replaceChildren();
+      if (!products.length) emptyRow(productBody, 4, 'Aún no hay productos. Agrega el primero con el formulario.');
+      for (const product of products) {
+        const row = document.createElement('tr');
+        const name = document.createElement('td');
+        name.textContent = product.nombre;
+        const price = document.createElement('td');
+        price.className = 'price';
+        price.textContent = currency.format(product.precio);
+        const stock = document.createElement('td');
+        const badge = document.createElement('span');
+        badge.className = 'stock-badge' + (Number(product.stock) < 5 ? ' stock-low' : '');
+        badge.textContent = product.stock;
+        stock.append(badge);
+        const actions = document.createElement('td');
+        const actionGroup = document.createElement('div');
+        actionGroup.className = 'row-actions';
+        actionGroup.append(
+          button('Editar', '', () => {
+            const form = document.getElementById('product');
+            form.dataset.id = product.id;
+            form.elements.nombre.value = product.nombre;
+            form.elements.precio.value = product.precio;
+            form.elements.stock.value = product.stock;
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            form.elements.nombre.focus({ preventScroll: true });
+          }),
+          button('Eliminar', 'button-danger', async () => {
+            if (confirm('¿Eliminar este producto?')) {
+              await api('productos/' + product.id, 'DELETE');
+              await load();
+              showMessage('Producto eliminado.');
+            }
+          }),
+          button('Clonar', '', async () => {
+            await api('productos/' + product.id + '/clonar', 'POST');
+            await load();
+            showMessage('Producto clonado con un identificador nuevo.');
+          })
+        );
+        actions.append(actionGroup);
+        row.append(name, price, stock, actions);
+        productBody.append(row);
+      }
+
+      const supplierBody = document.getElementById('suppliers');
+      supplierBody.replaceChildren();
+      if (!suppliers.length) emptyRow(supplierBody, 3, 'Aún no hay proveedores registrados.');
+      for (const supplier of suppliers) {
+        const row = document.createElement('tr');
+        const name = document.createElement('td');
+        name.textContent = supplier.nombre;
+        const phone = document.createElement('td');
+        phone.textContent = supplier.telefono || '—';
+        const actions = document.createElement('td');
+        const actionGroup = document.createElement('div');
+        actionGroup.className = 'row-actions';
+        actionGroup.append(
+          button('Editar', '', () => {
+            const form = document.getElementById('supplier');
+            form.dataset.id = supplier.id;
+            form.elements.nombre.value = supplier.nombre;
+            form.elements.telefono.value = supplier.telefono;
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            form.elements.nombre.focus({ preventScroll: true });
+          }),
+          button('Eliminar', 'button-danger', async () => {
+            if (confirm('¿Eliminar este proveedor?')) {
+              await api('proveedores/' + supplier.id, 'DELETE');
+              await load();
+              showMessage('Proveedor eliminado.');
+            }
+          })
+        );
+        actions.append(actionGroup);
+        row.append(name, phone, actions);
+        supplierBody.append(row);
+      }
+    }
+
+    for (const [id, resource] of [['product', 'productos'], ['supplier', 'proveedores']]) {
+      const form = document.getElementById(id);
+      form.onreset = () => delete form.dataset.id;
+      form.onsubmit = async event => {
+        event.preventDefault();
+        try {
+          const data = Object.fromEntries(new FormData(form));
+          if (id === 'product') {
+            data.precio = Number(data.precio);
+            data.stock = Number(data.stock);
+          }
+          const editing = Boolean(form.dataset.id);
+          await api(resource + (editing ? '/' + form.dataset.id : ''), editing ? 'PUT' : 'POST', data);
+          form.reset();
+          await load();
+          showMessage(editing ? 'Cambios guardados correctamente.' : 'Registro guardado correctamente.');
+        } catch (error) {
+          showMessage(error.message, true);
+        }
+      };
+    }
+
+    load().catch(error => showMessage(error.message, true));
+  </script>
+</body>
+</html>
